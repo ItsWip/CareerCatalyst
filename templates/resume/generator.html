@@ -207,7 +207,97 @@
         
         // Generate resume button
         generateResumeBtn.addEventListener('click', function() {
-            alert('This feature will be implemented in the next phase. In the complete app, this would generate a tailored resume based on your profile and the job description analysis.');
+            // Get selected template
+            const selectedTemplate = document.querySelector('input[name="templateRadio"]:checked').value;
+            const jobTitle = document.getElementById('jobTitle').value;
+            
+            // Basic validation
+            if (!jobTitle.trim()) {
+                alert('Please enter a job title first');
+                return;
+            }
+            
+            // Create a simple resume preview
+            const modalHTML = `
+                <div class="modal fade" id="resumePreviewModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Resume Preview - ${selectedTemplate.charAt(0).toUpperCase() + selectedTemplate.slice(1)} Template</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="resume-preview p-4">
+                                    <h1 class="mb-4">Resume for ${jobTitle}</h1>
+                                    
+                                    <div class="mb-4">
+                                        <h2 class="border-bottom pb-2 mb-3">Contact Information</h2>
+                                        <p><strong>Name:</strong> Not Even</p>
+                                        <p><strong>Title:</strong> AI Engineer</p>
+                                        <p><strong>Email:</strong> example@email.com</p>
+                                        <p><strong>Phone:</strong> (555) 123-4567</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h2 class="border-bottom pb-2 mb-3">Summary</h2>
+                                        <p>Enthusiastic AI Engineer with expertise in machine learning and artificial intelligence. Proficient in Python and various AI frameworks, with a passion for developing innovative solutions to complex problems.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h2 class="border-bottom pb-2 mb-3">Skills</h2>
+                                        <ul>
+                                            <li>Python</li>
+                                            <li>Machine Learning</li>
+                                            <li>TensorFlow</li>
+                                            <li>PyTorch</li>
+                                            <li>Data Analysis</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h2 class="border-bottom pb-2 mb-3">Experience</h2>
+                                        <p><em>This section will be populated with your actual work experience when you add it to your profile.</em></p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h2 class="border-bottom pb-2 mb-3">Education</h2>
+                                        <p><em>This section will be populated with your actual education when you add it to your profile.</em></p>
+                                    </div>
+                                    
+                                    <div>
+                                        <h2 class="border-bottom pb-2 mb-3">Projects</h2>
+                                        <p><em>This section will be populated with your actual projects when you add them to your profile.</em></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="downloadResumeBtn">Download PDF</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add modal to document
+            const modalContainer = document.createElement('div');
+            modalContainer.innerHTML = modalHTML;
+            document.body.appendChild(modalContainer);
+            
+            // Show modal
+            const resumeModal = new bootstrap.Modal(document.getElementById('resumePreviewModal'));
+            resumeModal.show();
+            
+            // Add event listener for download button
+            document.getElementById('downloadResumeBtn').addEventListener('click', function() {
+                alert('In the complete app, this would download your resume as a PDF file.');
+                resumeModal.hide();
+            });
+            
+            // Clean up when modal is hidden
+            document.getElementById('resumePreviewModal').addEventListener('hidden.bs.modal', function() {
+                document.body.removeChild(modalContainer);
+            });
         });
     });
 </script>

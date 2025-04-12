@@ -325,8 +325,60 @@
             // Display user's answer
             document.getElementById('userAnswer').textContent = answerText;
             
-            // Simple "AI" analysis (for demonstration)
-            const score = Math.floor(Math.random() * 4) + 7; // Score between 7-10
+            // More realistic scoring based on answer length and content
+            let score = 0;
+            
+            // Basic scoring criteria
+            // 1. Length of answer (longer answers tend to be more detailed)
+            if (answerText.length > 300) {
+                score += 3;
+            } else if (answerText.length > 150) {
+                score += 2;
+            } else if (answerText.length > 50) {
+                score += 1;
+            }
+            
+            // 2. Check for technical keywords in technical questions
+            let questionType = selectedQuestions[currentQuestionIndex].type;
+            let keywordsPresent = 0;
+            
+            if (questionType === 'technical') {
+                const technicalKeywords = ['algorithm', 'complexity', 'implementation', 'code', 'function', 'class', 'data', 'structure', 'memory', 'performance', 'optimization'];
+                technicalKeywords.forEach(keyword => {
+                    if (answerText.toLowerCase().includes(keyword)) {
+                        keywordsPresent++;
+                    }
+                });
+            } else if (questionType === 'behavioral') {
+                const behavioralKeywords = ['experience', 'team', 'project', 'challenge', 'solution', 'learned', 'achieved', 'improved', 'collaborated', 'leadership'];
+                behavioralKeywords.forEach(keyword => {
+                    if (answerText.toLowerCase().includes(keyword)) {
+                        keywordsPresent++;
+                    }
+                });
+            } else {
+                const hrKeywords = ['goal', 'strength', 'weakness', 'value', 'background', 'skill', 'motivation', 'interest', 'passion', 'career'];
+                hrKeywords.forEach(keyword => {
+                    if (answerText.toLowerCase().includes(keyword)) {
+                        keywordsPresent++;
+                    }
+                });
+            }
+            
+            // Add points based on keywords (max 4 points)
+            score += Math.min(4, keywordsPresent);
+            
+            // 3. Sentence structure and organization (simple heuristic)
+            const sentences = answerText.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            if (sentences.length >= 3) {
+                score += 2;
+            } else if (sentences.length >= 1) {
+                score += 1;
+            }
+            
+            // Cap the score at 10
+            score = Math.min(10, score);
+            
             interviewScores.push(score);
             
             // Display score
@@ -338,7 +390,7 @@
             let improvements = [];
             
             // Random feedback based on the question type
-            const questionType = selectedQuestions[currentQuestionIndex].type;
+            questionType = selectedQuestions[currentQuestionIndex].type;
             
             if (questionType === 'technical') {
                 analysis = 'Your answer demonstrates good technical knowledge, but could be more detailed in explaining the implementation.';
@@ -476,7 +528,7 @@
             // Set description based on score
             let description = '';
             if (percentageScore >= 90) {
-                description = 'Excellent! You're well-prepared and demonstrated outstanding interview skills.';
+                description = "Excellent! You're well-prepared and demonstrated outstanding interview skills.";
             } else if (percentageScore >= 75) {
                 description = 'Good job! You demonstrated solid knowledge and communication skills.';
             } else if (percentageScore >= 60) {
