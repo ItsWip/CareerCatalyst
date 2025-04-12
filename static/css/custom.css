@@ -1,0 +1,175 @@
+/* Custom styles to complement Bootstrap */
+
+/* Resume templates */
+.resume-preview {
+    max-width: 8.5in;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    background-color: white;
+    color: #333;
+}
+
+/* Match score badges */
+.match-score {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Dashboard widgets */
+.dashboard-widget {
+    height: 100%;
+    border-radius: 0.5rem;
+    transition: transform 0.2s;
+}
+
+.dashboard-widget:hover {
+    transform: translateY(-5px);
+}
+
+/* Interview simulator */
+.interview-container {
+    min-height: 400px;
+}
+
+.feedback-meter {
+    height: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.feedback-value {
+    height: 100%;
+    border-radius: 5px;
+}
+
+/* Profile form */
+.section-card {
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.section-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Recording animation */
+.recording-indicator {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    border-radius: 50%;
+    margin-right: 5px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+    }
+}
+
+/* Job and hackathon cards */
+.opportunity-card {
+    transition: transform 0.2s;
+    height: 100%;
+}
+
+.opportunity-card:hover {
+    transform: translateY(-5px);
+}
+
+.badge-remote {
+    background-color: var(--bs-purple);
+    color: white;
+}
+
+.badge-full-time {
+    background-color: var(--bs-blue);
+    color: white;
+}
+
+.badge-part-time {
+    background-color: var(--bs-cyan);
+    color: white;
+}
+
+.badge-internship {
+    background-color: var(--bs-teal);
+    color: white;
+}
+
+.badge-beginner {
+    background-color: var(--bs-success);
+    color: white;
+}
+
+.badge-intermediate {
+    background-color: var(--bs-warning);
+    color: white;
+}
+
+.badge-advanced {
+    background-color: var(--bs-danger);
+    color: white;
+}
+
+/* Override for dark theme */
+[data-bs-theme="dark"] .resume-preview {
+    background-color: #343a40;
+    color: #f8f9fa;
+    border-color: #495057;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    border: 0.25em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-rotation 0.75s linear infinite;
+}
+
+@keyframes spinner-rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .match-score {
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+    }
+    
+    .dashboard-widget {
+        margin-bottom: 15px;
+    }
+}

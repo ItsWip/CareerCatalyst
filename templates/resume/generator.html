@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Generator - CareerCompass{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="mb-3">Smart Resume Generator</h1>
+                    <p class="lead">Create tailored resumes that match job descriptions with our AI-powered resume generator.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0">
+                    <h4 class="mb-0">Job Description Analysis</h4>
+                </div>
+                <div class="card-body">
+                    <form id="jobAnalysisForm">
+                        <div class="mb-3">
+                            <label for="jobTitle" class="form-label">Job Title</label>
+                            <input type="text" class="form-control" id="jobTitle" name="jobTitle" placeholder="e.g., Senior Software Engineer">
+                        </div>
+                        <div class="mb-3">
+                            <label for="jobDescription" class="form-label">Job Description</label>
+                            <textarea class="form-control" id="jobDescription" name="jobDescription" rows="10" placeholder="Paste the job description here..."></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Analyze Job Description</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0">
+                    <h4 class="mb-0">Resume Template</h4>
+                </div>
+                <div class="card-body">
+                    <p class="mb-4">Select a resume template that best represents your professional style</p>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="card template-card border-primary mb-3 h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Professional</h5>
+                                    <p class="card-text small">Clean and traditional format, perfect for corporate roles</p>
+                                    <div class="form-check mt-3">
+                                        <input class="form-check-input" type="radio" name="templateRadio" id="professionalTemplate" value="professional" checked>
+                                        <label class="form-check-label" for="professionalTemplate">
+                                            Select
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card template-card mb-3 h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Modern</h5>
+                                    <p class="card-text small">Contemporary design with balanced layout</p>
+                                    <div class="form-check mt-3">
+                                        <input class="form-check-input" type="radio" name="templateRadio" id="modernTemplate" value="modern">
+                                        <label class="form-check-label" for="modernTemplate">
+                                            Select
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card template-card mb-3 h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Creative</h5>
+                                    <p class="card-text small">Bold and distinctive for creative positions</p>
+                                    <div class="form-check mt-3">
+                                        <input class="form-check-input" type="radio" name="templateRadio" id="creativeTemplate" value="creative">
+                                        <label class="form-check-label" for="creativeTemplate">
+                                            Select
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h5>Match Score</h5>
+                        <div class="progress mb-3" style="height: 30px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                        </div>
+                        <p class="text-muted small">Analyze a job description to see how well your profile matches the requirements</p>
+                    </div>
+                    
+                    <div class="d-grid mt-4">
+                        <button id="generateResumeBtn" class="btn btn-success" disabled>Generate Resume</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Keywords Section (hidden until job analysis) -->
+    <div id="keywordsSection" class="row mt-4" style="display: none;">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <h4 class="mb-0">Key Skills & Requirements</h4>
+                </div>
+                <div class="card-body">
+                    <p>These keywords were extracted from the job description. Make sure to highlight these skills in your resume.</p>
+                    <div id="keywordsList" class="mt-3">
+                        <!-- Keywords will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const jobAnalysisForm = document.getElementById('jobAnalysisForm');
+        const generateResumeBtn = document.getElementById('generateResumeBtn');
+        const keywordsSection = document.getElementById('keywordsSection');
+        const keywordsList = document.getElementById('keywordsList');
+        const progressBar = document.querySelector('.progress-bar');
+        
+        jobAnalysisForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simulating API request for job description analysis
+            const jobTitle = document.getElementById('jobTitle').value;
+            const jobDescription = document.getElementById('jobDescription').value;
+            
+            if (!jobTitle || !jobDescription) {
+                alert('Please enter both job title and description');
+                return;
+            }
+            
+            // Simulate loading
+            progressBar.style.width = '0%';
+            progressBar.textContent = 'Analyzing...';
+            
+            // Simulate API response after 1.5 seconds
+            setTimeout(function() {
+                // Simple keyword extraction (in a real app this would be done on the server)
+                const words = jobDescription.toLowerCase().split(/\W+/);
+                const commonWords = new Set(['the', 'and', 'to', 'of', 'a', 'in', 'for', 'is', 'on', 'that', 'by', 'this', 'with', 'an', 'are', 'be', 'as', 'at', 'from', 'has', 'have', 'it', 'or', 'you', 'your', 'will', 'we', 'our', 'their', 'they', 'about', 'can', 'which']);
+                const wordCount = {};
+                
+                words.forEach(word => {
+                    if (word.length > 3 && !commonWords.has(word)) {
+                        wordCount[word] = (wordCount[word] || 0) + 1;
+                    }
+                });
+                
+                // Get top keywords
+                const keywords = Object.entries(wordCount)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 15)
+                    .map(entry => entry[0]);
+                
+                // Display keywords
+                keywordsList.innerHTML = '';
+                keywords.forEach(keyword => {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge bg-primary me-2 mb-2';
+                    badge.textContent = keyword;
+                    keywordsList.appendChild(badge);
+                });
+                
+                // Show keywords section
+                keywordsSection.style.display = 'block';
+                
+                // Update match score (random for demo)
+                const matchScore = Math.floor(Math.random() * 30) + 50; // Random score between 50-80%
+                progressBar.style.width = matchScore + '%';
+                progressBar.textContent = matchScore + '%';
+                
+                // Enable generate button
+                generateResumeBtn.disabled = false;
+            }, 1500);
+        });
+        
+        // Template selection styling
+        document.querySelectorAll('input[name="templateRadio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Remove border-primary from all cards
+                document.querySelectorAll('.template-card').forEach(card => {
+                    card.classList.remove('border-primary');
+                });
+                
+                // Add border-primary to selected card
+                this.closest('.template-card').classList.add('border-primary');
+            });
+        });
+        
+        // Generate resume button
+        generateResumeBtn.addEventListener('click', function() {
+            alert('This feature will be implemented in the next phase. In the complete app, this would generate a tailored resume based on your profile and the job description analysis.');
+        });
+    });
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .template-card {
+        cursor: pointer;
+        transition: all 0.2s;
+        border-width: 2px;
+    }
+    
+    .template-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+</style>
+{% endblock %}

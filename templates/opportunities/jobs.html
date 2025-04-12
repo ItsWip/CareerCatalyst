@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Job Opportunities - CareerCompass{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h1 class="mb-0">Job Opportunities</h1>
+                        <div class="btn-group" role="group">
+                            <a href="/opportunities" class="btn btn-primary active">Jobs</a>
+                            <a href="/opportunities/hackathons" class="btn btn-outline-primary">Hackathons</a>
+                        </div>
+                    </div>
+                    <p class="lead">Discover job opportunities tailored to your skills and preferences.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Search and Filters -->
+        <div class="col-md-4 col-lg-3 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0">Search & Filters</h5>
+                </div>
+                <div class="card-body">
+                    <form id="jobSearchForm">
+                        <div class="mb-3">
+                            <label for="keywords" class="form-label">Keywords</label>
+                            <input type="text" class="form-control" id="keywords" placeholder="e.g., Python, Developer">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="location" placeholder="e.g., San Francisco, Remote">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Job Type</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="full-time" id="fullTimeCheck" checked>
+                                <label class="form-check-label" for="fullTimeCheck">
+                                    Full-time
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="part-time" id="partTimeCheck">
+                                <label class="form-check-label" for="partTimeCheck">
+                                    Part-time
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="contract" id="contractCheck">
+                                <label class="form-check-label" for="contractCheck">
+                                    Contract
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="internship" id="internshipCheck">
+                                <label class="form-check-label" for="internshipCheck">
+                                    Internship
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="remote" id="remoteCheck" checked>
+                                <label class="form-check-label" for="remoteCheck">
+                                    Remote
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Experience Level</label>
+                            <select class="form-select" id="experienceLevel">
+                                <option value="">Any experience level</option>
+                                <option value="entry">Entry Level</option>
+                                <option value="mid">Mid Level</option>
+                                <option value="senior">Senior Level</option>
+                                <option value="executive">Executive</option>
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary">Search Jobs</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0">Saved Jobs</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted text-center">No saved jobs yet</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Job Listings -->
+        <div class="col-md-8 col-lg-9">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Available Opportunities</h5>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Sort By
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                            <li><a class="dropdown-item" href="#">Most Relevant</a></li>
+                            <li><a class="dropdown-item" href="#">Date: Newest First</a></li>
+                            <li><a class="dropdown-item" href="#">Date: Oldest First</a></li>
+                            <li><a class="dropdown-item" href="#">Company: A-Z</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Job listings will be displayed here -->
+                    {% if jobs and jobs|length > 0 %}
+                        <div class="list-group list-group-flush">
+                            {% for job in jobs %}
+                                <div class="list-group-item border-0 px-0 py-3">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h5 class="mb-1">{{ job.title }}</h5>
+                                            <p class="mb-1">{{ job.company }}</p>
+                                            <p class="text-muted small mb-2">{{ job.location }} • Posted: {{ job.posted_date }}</p>
+                                            <p>{{ job.description }}</p>
+                                            <div class="mt-2">
+                                                <button class="btn btn-sm btn-outline-primary me-2">Save Job</button>
+                                                {% if job.url %}
+                                                <a href="{{ job.url }}" target="_blank" class="btn btn-sm btn-primary">Apply Now</a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="ms-3">
+                                            <span class="badge bg-light text-dark mb-2">Full-time</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <p class="text-muted mb-3">No job listings found. Try adjusting your search criteria.</p>
+                            <button class="btn btn-outline-primary" id="showSampleJobsBtn">Show Sample Jobs</button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Recommendation section -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0">Personalized Recommendations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center py-4">
+                        <p class="text-muted">Complete your profile to get personalized job recommendations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const jobSearchForm = document.getElementById('jobSearchForm');
+        const showSampleJobsBtn = document.getElementById('showSampleJobsBtn');
+        
+        if (jobSearchForm) {
+            jobSearchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // In a real app, this would send an AJAX request to the server
+                // For this demo, we'll just show a message
+                alert('This would search for jobs matching your criteria. In the complete app, this would fetch matching jobs from job APIs.');
+            });
+        }
+        
+        if (showSampleJobsBtn) {
+            showSampleJobsBtn.addEventListener('click', function() {
+                // In a real app, this would show sample jobs
+                // For this demo, we'll just show a message
+                alert('This would show sample job listings. In the complete app, this would display sample job data for demonstration purposes.');
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,6 @@
+Flask
+Flask-Login
+Werkzeug
+requests
+gTTS
+SpeechRecognition

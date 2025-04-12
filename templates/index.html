@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}CareerCompass - Your Career Development Platform{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row py-5 align-items-center">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold">Accelerate Your Career Growth</h1>
+            <p class="fs-4 mb-4">An all-in-one platform to craft your perfect resume, practice interviews, and discover opportunities.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a href="/register" class="btn btn-primary btn-lg px-4 me-md-2">Get Started</a>
+                <a href="#features" class="btn btn-outline-secondary btn-lg px-4">Learn More</a>
+            </div>
+        </div>
+        <div class="col-lg-6 d-flex justify-content-center">
+            <img src="https://source.unsplash.com/random/600x400/?career" alt="Career growth" class="img-fluid rounded shadow mt-4 mt-lg-0">
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div id="features" class="py-5">
+        <h2 class="text-center mb-5">Powerful Features to Boost Your Career</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <h3 class="card-title">Smart Resume Builder</h3>
+                        <p class="card-text">Create tailored resumes that match job descriptions with our AI-powered resume generator. Stand out from the competition with optimized content.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-mic"></i>
+                        </div>
+                        <h3 class="card-title">Interview Practice</h3>
+                        <p class="card-text">Practice job interviews with our AI interviewer. Get feedback on your answers and improve your interviewing skills.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-search"></i>
+                        </div>
+                        <h3 class="card-title">Opportunity Explorer</h3>
+                        <p class="card-text">Discover job opportunities and hackathons tailored to your profile. Never miss a chance to advance your career.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="py-5">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row">
+            <div class="col-md-3 text-center">
+                <div class="bg-light rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                    <h3 class="m-0">1</h3>
+                </div>
+                <h4>Create Profile</h4>
+                <p>Set up your profile with your experience, skills, and career goals.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="bg-light rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                    <h3 class="m-0">2</h3>
+                </div>
+                <h4>Build Resume</h4>
+                <p>Generate tailored resumes for specific job positions.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="bg-light rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                    <h3 class="m-0">3</h3>
+                </div>
+                <h4>Practice Interviews</h4>
+                <p>Prepare for job interviews with realistic practice sessions.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="bg-light rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                    <h3 class="m-0">4</h3>
+                </div>
+                <h4>Find Opportunities</h4>
+                <p>Discover and apply to jobs that match your skills and aspirations.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <div class="py-5 bg-light rounded">
+        <h2 class="text-center mb-5">What Users Say</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <p class="card-text">"CareerCompass helped me create a resume that landed me multiple interviews. The AI suggestions were spot on!"</p>
+                        <div class="d-flex align-items-center mt-3">
+                            <div class="ms-3">
+                                <h5 class="mb-0">John Davis</h5>
+                                <small class="text-muted">Software Engineer</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <p class="card-text">"The interview practice feature gave me the confidence I needed for my dream job. I was well-prepared for every question!"</p>
+                        <div class="d-flex align-items-center mt-3">
+                            <div class="ms-3">
+                                <h5 class="mb-0">Sarah Johnson</h5>
+                                <small class="text-muted">Marketing Specialist</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <p class="card-text">"I found a great hackathon through CareerCompass that helped me showcase my skills to potential employers."</p>
+                        <div class="d-flex align-items-center mt-3">
+                            <div class="ms-3">
+                                <h5 class="mb-0">Michael Wong</h5>
+                                <small class="text-muted">Data Scientist</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="py-5 text-center">
+        <h2 class="mb-4">Ready to Take Your Career to the Next Level?</h2>
+        <a href="/register" class="btn btn-primary btn-lg px-5">Get Started Today</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Add Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+{% endblock %}

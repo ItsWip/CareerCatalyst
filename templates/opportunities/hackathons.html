@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}Hackathon Search - CareerCompass{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h1 class="mb-0">
+            <i class="fas fa-laptop-code me-2"></i> Hackathon Search
+        </h1>
+    </div>
+    <div class="col-md-6 text-md-end">
+        <div class="btn-group">
+            <a href="{{ url_for('opportunities.jobs') }}" class="btn btn-outline-primary">
+                <i class="fas fa-briefcase me-1"></i> Jobs
+            </a>
+            <a href="{{ url_for('opportunities.recommendations') }}" class="btn btn-outline-primary">
+                <i class="fas fa-star me-1"></i> Recommendations
+            </a>
+            <a href="{{ url_for('opportunities.hackathons') }}" class="btn btn-outline-primary active">
+                <i class="fas fa-laptop-code me-1"></i> Hackathons
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Hackathon search filters -->
+<div class="card mb-4">
+    <div class="card-header bg-primary bg-opacity-50">
+        <h5 class="card-title mb-0">Search Filters</h5>
+    </div>
+    <div class="card-body">
+        <form id="hackathon-filter-form" method="GET" action="{{ url_for('opportunities.hackathons') }}">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="keywords" class="form-label">Keywords</label>
+                    <input type="text" class="form-control" id="keywords" name="keywords" value="{{ keywords or '' }}" placeholder="e.g., AI, Web Dev, Blockchain">
+                </div>
+                <div class="col-md-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" name="location" value="{{ location or '' }}" placeholder="e.g., San Francisco, Online">
+                </div>
+                <div class="col-md-2">
+                    <label for="remote" class="form-label">Remote Option</label>
+                    <select class="form-select" id="remote" name="remote">
+                        <option value="" {% if remote is none %}selected{% endif %}>All</option>
+                        <option value="1" {% if remote == '1' %}selected{% endif %}>Remote Only</option>
+                        <option value="0" {% if remote == '0' %}selected{% endif %}>In-Person Only</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="skill_level" class="form-label">Skill Level</label>
+                    <select class="form-select" id="skill_level" name="skill_level">
+                        <option value="" {% if not skill_level %}selected{% endif %}>All Levels</option>
+                        <option value="beginner" {% if skill_level == 'beginner' %}selected{% endif %}>Beginner</option>
+                        <option value="intermediate" {% if skill_level == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                        <option value="advanced" {% if skill_level == 'advanced' %}selected{% endif %}>Advanced</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="row g-3 mt-1">
+                <div class="col-md-4">
+                    <label for="team_size" class="form-label">Team Size</label>
+                    <select class="form-select" id="team_size" name="team_size">
+                        <option value="" {% if not team_size %}selected{% endif %}>Any Team Size</option>
+                        <option value="individual" {% if team_size == 'individual' %}selected{% endif %}>Individual</option>
+                        <option value="team" {% if team_size == 'team' %}selected{% endif %}>Team</option>
+                        <option value="both" {% if team_size == 'both' %}selected{% endif %}>Both Options</option>
+                    </select>
+                </div>
+                <div class="col-md-8 d-flex align-items-end justify-content-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i> Search Hackathons
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Hackathons listing -->
+<div class="card">
+    <div class="card-header bg-primary bg-opacity-75 text-white d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">Hackathon Opportunities</h5>
+        <span>{{ hackathons|length }} results</span>
+    </div>
+    <div class="card-body">
+        {% if hackathons %}
+        <div class="row g-4">
+            {% for hackathon in hackathons %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 opportunity-card">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-dark bg-opacity-50">
+                        <h5 class="card-title mb-0 text-truncate" title="{{ hackathon.name }}">{{ hackathon.name }}</h5>
+                        <span class="badge 
+                            {% if hackathon.skill_level == 'beginner' %}badge-beginner
+                            {% elif hackathon.skill_level == 'intermediate' %}badge-intermediate
+                            {% else %}badge-advanced{% endif %}">
+                            {{ hackathon.skill_level }}
+                        </span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-subtitle mb-2 text-muted">{{ hackathon.organizer }}</h6>
+                        <p class="card-text small mb-2">
+                            <i class="fas fa-map-marker-alt me-1"></i> {{ hackathon.location }}
+                            {% if hackathon.is_remote %}
+                            <span class="badge badge-remote ms-1">Remote</span>
+                            {% endif %}
+                        </p>
+                        <p class="card-text">{{ hackathon.description|truncate(150) }}</p>
+                        
+                        <div class="mt-2 mb-3">
+                            <div class="row">
+                                <div class="col-6">
+                                    <i class="fas fa-calendar-alt me-1"></i>
+                                    <small>Start: {{ hackathon.start_date.strftime('%Y-%m-%d') }}</small>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <i class="fas fa-calendar-check me-1"></i>
+                                    <small>End: {{ hackathon.end_date.strftime('%Y-%m-%d') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if hackathon.team_size %}
+                        <div class="mb-3">
+                            <span class="badge bg-secondary me-2">
+                                <i class="fas fa-users me-1"></i> 
+                                {% if hackathon.team_size == 'individual' %}
+                                Individual
+                                {% elif hackathon.team_size == 'team' %}
+                                Team Required
+                                {% else %}
+                                Individual or Team
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if hackathon.prizes and hackathon.prizes|length > 0 %}
+                        <div class="mb-3">
+                            <strong><i class="fas fa-trophy me-1"></i> Prizes:</strong>
+                            <ul class="mb-0 ps-3">
+                                {% for prize in hackathon.prizes %}
+                                <li>{{ prize }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="mt-auto d-flex justify-content-between">
+                            <div>
+                                {% if hackathon.start_date > now %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-clock me-1"></i> 
+                                    {{ (hackathon.start_date - now).days }} days left
+                                </span>
+                                {% elif hackathon.end_date > now %}
+                                <span class="badge bg-warning">
+                                    <i class="fas fa-running me-1"></i> Ongoing
+                                </span>
+                                {% else %}
+                                <span class="badge bg-secondary">
+                                    <i class="fas fa-check-circle me-1"></i> Completed
+                                </span>
+                                {% endif %}
+                            </div>
+                            <div class="btn-group">
+                                <a href="{{ hackathon.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-external-link-alt me-1"></i> View
+                                </a>
+                                {% if hackathon.url in saved_hackathon_urls %}
+                                <button class="btn btn-sm btn-success" disabled>
+                                    <i class="fas fa-check me-1"></i> Saved
+                                </button>
+                                {% else %}
+                                <button class="btn btn-sm btn-outline-primary save-hackathon-btn" data-hackathon-id="{{ loop.index0 }}">
+                                    <i class="fas fa-bookmark me-1"></i> Save
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i> No hackathons found matching your search criteria. Try adjusting your filters.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize event listeners for saving hackathons
+    document.addEventListener('DOMContentLoaded', function() {
+        setupOpportunityFilters();
+    });
+</script>
+{% endblock %}

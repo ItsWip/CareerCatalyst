@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - CareerCompass{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="mb-3">Welcome{% if profile and profile.full_name %}, {{ profile.full_name }}{% endif %}!</h1>
+                    <p class="lead">Track your career progress and discover new opportunities from your personalized dashboard.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3 mb-md-0">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Profile Completeness</h5>
+                    <div class="py-3">
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                        </div>
+                    </div>
+                    <p class="card-text">Complete your profile to enhance job matching.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Resumes</h5>
+                    <p class="display-4 py-3">0</p>
+                    <p class="card-text">Create tailored resumes for job applications.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Interviews</h5>
+                    <p class="display-4 py-3">0</p>
+                    <p class="card-text">Practice interviews to improve your skills.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Saved Opportunities</h5>
+                    <p class="display-4 py-3">0</p>
+                    <p class="card-text">Track your job and hackathon opportunities.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skill Distribution -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0">Skill Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center py-4">
+                        <p class="text-muted">Add skills to your profile to see your skill distribution</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0">Application Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center py-4">
+                        <p class="text-muted">Save job opportunities to track your application status</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions and Recent Activity -->
+    <div class="row">
+        <div class="col-md-4 mb-4 mb-md-0">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/profile" class="btn btn-outline-primary">Complete Your Profile</a>
+                        <a href="/resume" class="btn btn-outline-primary">Create a Resume</a>
+                        <a href="/interview" class="btn btn-outline-primary">Practice Interviews</a>
+                        <a href="/opportunities" class="btn btn-outline-primary">Browse Opportunities</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0">Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center py-4">
+                        <p class="text-muted">Your recent activities will appear here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Basic chart initialization will go here when we have data
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize charts when we have real data
+    });
+</script>
+{% endblock %}

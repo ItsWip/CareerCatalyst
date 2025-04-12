@@ -1,0 +1,550 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile - CareerCompass{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h1 class="mb-0">
+            <i class="fas fa-user-edit me-2"></i> Edit Profile
+        </h1>
+    </div>
+    <div class="col-md-6 text-md-end">
+        <a href="{{ url_for('profile.view') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i> Back to Profile
+        </a>
+    </div>
+</div>
+
+<form method="POST" action="{{ url_for('profile.edit') }}">
+    <!-- Personal Information -->
+    <div class="card section-card mb-4">
+        <div class="card-header bg-primary bg-opacity-75 text-white">
+            <h5 class="card-title mb-0">Personal Information</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="full_name" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="full_name" name="full_name" value="{{ profile.personal_info.full_name }}">
+                </div>
+                <div class="col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ profile.personal_info.email }}">
+                </div>
+                <div class="col-md-6">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" name="phone" value="{{ profile.personal_info.phone }}">
+                </div>
+                <div class="col-md-6">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" name="location" value="{{ profile.personal_info.location }}">
+                </div>
+                <div class="col-md-4">
+                    <label for="linkedin" class="form-label">LinkedIn</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fab fa-linkedin"></i></span>
+                        <input type="text" class="form-control" id="linkedin" name="linkedin" value="{{ profile.personal_info.linkedin }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="github" class="form-label">GitHub</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fab fa-github"></i></span>
+                        <input type="text" class="form-control" id="github" name="github" value="{{ profile.personal_info.github }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="website" class="form-label">Website</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                        <input type="text" class="form-control" id="website" name="website" value="{{ profile.personal_info.website }}">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="summary" class="form-label">Professional Summary</label>
+                    <textarea class="form-control" id="summary" name="summary" rows="4">{{ profile.personal_info.summary }}</textarea>
+                    <div class="form-text">A brief overview of your professional background, skills, and career goals.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills -->
+    <div class="card section-card mb-4">
+        <div class="card-header bg-primary bg-opacity-75 text-white">
+            <h5 class="card-title mb-0">Skills</h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label for="skills" class="form-label">Skills (comma separated)</label>
+                <textarea class="form-control" id="skills" name="skills" rows="3">{{ profile.skills|join(', ') }}</textarea>
+                <div class="form-text">Example: Python, JavaScript, React, Flask, Data Analysis, Project Management</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save button for personal info and skills -->
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save me-2"></i> Save Profile
+        </button>
+    </div>
+</form>
+
+<!-- Education Section -->
+<div class="card section-card mb-4">
+    <div class="card-header bg-primary bg-opacity-75 text-white d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">Education</h5>
+        <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addEducationModal">
+            <i class="fas fa-plus"></i> Add
+        </button>
+    </div>
+    <div class="card-body">
+        {% if profile.education %}
+        <div class="list-group list-group-flush">
+            {% for education in profile.education %}
+            <div class="list-group-item bg-transparent education-item">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="mb-1">{{ education.degree }}</h5>
+                        <p class="mb-1">{{ education.institution }}{% if education.location %}, {{ education.location }}{% endif %}</p>
+                        <p class="text-muted mb-1">
+                            {{ education.start_date }}{% if education.end_date %} - {{ education.end_date }}{% endif %}
+                            {% if education.gpa %} | GPA: {{ education.gpa }}{% endif %}
+                        </p>
+                        {% if education.description %}
+                        <p class="mb-0">{{ education.description }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-outline-danger btn-sm remove-education-btn" data-index="{{ loop.index0 }}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-secondary">
+            <i class="fas fa-info-circle me-2"></i> No education entries yet. Click "Add" to add your education.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Work Experience Section -->
+<div class="card section-card mb-4">
+    <div class="card-header bg-primary bg-opacity-75 text-white d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">Work Experience</h5>
+        <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addExperienceModal">
+            <i class="fas fa-plus"></i> Add
+        </button>
+    </div>
+    <div class="card-body">
+        {% if profile.experience %}
+        <div class="list-group list-group-flush">
+            {% for experience in profile.experience %}
+            <div class="list-group-item bg-transparent experience-item">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="mb-1">{{ experience.title }}</h5>
+                        <p class="mb-1">{{ experience.company }}{% if experience.location %}, {{ experience.location }}{% endif %}</p>
+                        <p class="text-muted mb-1">{{ experience.start_date }}{% if experience.end_date %} - {{ experience.end_date }}{% endif %}</p>
+                        <p class="mb-1">{{ experience.description }}</p>
+                        
+                        {% if experience.responsibilities %}
+                        <div class="mt-2">
+                            <strong>Responsibilities:</strong>
+                            <ul class="mb-1">
+                                {% for item in experience.responsibilities %}
+                                <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        
+                        {% if experience.achievements %}
+                        <div class="mt-2">
+                            <strong>Achievements:</strong>
+                            <ul class="mb-0">
+                                {% for item in experience.achievements %}
+                                <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-outline-danger btn-sm remove-experience-btn" data-index="{{ loop.index0 }}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-secondary">
+            <i class="fas fa-info-circle me-2"></i> No work experience entries yet. Click "Add" to add your work experience.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Projects Section -->
+<div class="card section-card mb-4">
+    <div class="card-header bg-primary bg-opacity-75 text-white d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">Projects</h5>
+        <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addProjectModal">
+            <i class="fas fa-plus"></i> Add
+        </button>
+    </div>
+    <div class="card-body">
+        {% if profile.projects %}
+        <div class="list-group list-group-flush">
+            {% for project in profile.projects %}
+            <div class="list-group-item bg-transparent project-item">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center">
+                            <h5 class="mb-1">{{ project.name }}</h5>
+                            {% if project.url %}
+                            <a href="{{ project.url }}" target="_blank" class="ms-2">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% if project.start_date or project.end_date %}
+                        <p class="text-muted mb-1">
+                            {{ project.start_date or 'N/A' }}{% if project.end_date %} - {{ project.end_date }}{% endif %}
+                        </p>
+                        {% endif %}
+                        <p class="mb-1">{{ project.description }}</p>
+                        {% if project.technologies %}
+                        <div class="mt-2">
+                            <strong>Technologies:</strong>
+                            <div>
+                                {% for tech in project.technologies %}
+                                <span class="badge bg-secondary me-1 mb-1">{{ tech }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-outline-danger btn-sm remove-project-btn" data-index="{{ loop.index0 }}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-secondary">
+            <i class="fas fa-info-circle me-2"></i> No project entries yet. Click "Add" to add your projects.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Certifications Section -->
+<div class="card section-card mb-4">
+    <div class="card-header bg-primary bg-opacity-75 text-white d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">Certifications</h5>
+        <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addCertificationModal">
+            <i class="fas fa-plus"></i> Add
+        </button>
+    </div>
+    <div class="card-body">
+        {% if profile.certifications %}
+        <div class="list-group list-group-flush">
+            {% for certification in profile.certifications %}
+            <div class="list-group-item bg-transparent certification-item">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center">
+                            <h5 class="mb-1">{{ certification.name }}</h5>
+                            {% if certification.url %}
+                            <a href="{{ certification.url }}" target="_blank" class="ms-2">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                        <p class="mb-1">{{ certification.issuer }}</p>
+                        <p class="text-muted mb-0">
+                            {{ certification.date }}
+                            {% if certification.expiry %}
+                            <span class="ms-2">(Expires: {{ certification.expiry }})</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-outline-danger btn-sm remove-certification-btn" data-index="{{ loop.index0 }}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-secondary">
+            <i class="fas fa-info-circle me-2"></i> No certification entries yet. Click "Add" to add your certifications.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Achievements Section -->
+<div class="card section-card mb-4">
+    <div class="card-header bg-primary bg-opacity-75 text-white d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">Achievements</h5>
+        <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addAchievementModal">
+            <i class="fas fa-plus"></i> Add
+        </button>
+    </div>
+    <div class="card-body">
+        {% if profile.achievements %}
+        <div class="list-group list-group-flush">
+            {% for achievement in profile.achievements %}
+            <div class="list-group-item bg-transparent achievement-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-0">{{ achievement }}</p>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-outline-danger btn-sm remove-achievement-btn" data-index="{{ loop.index0 }}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-secondary">
+            <i class="fas fa-info-circle me-2"></i> No achievement entries yet. Click "Add" to add your achievements.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Education Modal -->
+<div class="modal fade" id="addEducationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Education</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-education-form">
+                    <div class="mb-3">
+                        <label for="degree" class="form-label">Degree/Certificate</label>
+                        <input type="text" class="form-control" id="degree" name="degree" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="institution" class="form-label">Institution</label>
+                        <input type="text" class="form-control" id="institution" name="institution" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="start_date" class="form-label">Start Date</label>
+                            <input type="text" class="form-control" id="start_date" name="start_date" placeholder="e.g., Sep 2018">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="end_date" class="form-label">End Date</label>
+                            <input type="text" class="form-control" id="end_date" name="end_date" placeholder="e.g., May 2022 or Present">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="gpa" class="form-label">GPA (optional)</label>
+                        <input type="text" class="form-control" id="gpa" name="gpa">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description (optional)</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Education</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Experience Modal -->
+<div class="modal fade" id="addExperienceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Work Experience</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-experience-form">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Job Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="company" class="form-label">Company</label>
+                        <input type="text" class="form-control" id="company" name="company" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="start_date" class="form-label">Start Date</label>
+                            <input type="text" class="form-control" id="start_date" name="start_date" placeholder="e.g., Jan 2020">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="end_date" class="form-label">End Date</label>
+                            <input type="text" class="form-control" id="end_date" name="end_date" placeholder="e.g., Mar 2022 or Present">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="responsibilities" class="form-label">Responsibilities (one per line)</label>
+                        <textarea class="form-control" id="responsibilities" name="responsibilities" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="achievements" class="form-label">Achievements (one per line)</label>
+                        <textarea class="form-control" id="achievements" name="achievements" rows="3"></textarea>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Experience</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Project Modal -->
+<div class="modal fade" id="addProjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-project-form">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Project Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="technologies" class="form-label">Technologies (comma separated)</label>
+                        <input type="text" class="form-control" id="technologies" name="technologies" required>
+                        <div class="form-text">Example: Python, React, Flask, MongoDB</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="url" class="form-label">Project URL (optional)</label>
+                        <input type="url" class="form-control" id="url" name="url">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="start_date" class="form-label">Start Date (optional)</label>
+                            <input type="text" class="form-control" id="start_date" name="start_date" placeholder="e.g., Mar 2022">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="end_date" class="form-label">End Date (optional)</label>
+                            <input type="text" class="form-control" id="end_date" name="end_date" placeholder="e.g., Jul 2022 or Present">
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Project</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Certification Modal -->
+<div class="modal fade" id="addCertificationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Certification</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-certification-form">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Certification Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="issuer" class="form-label">Issuing Organization</label>
+                        <input type="text" class="form-control" id="issuer" name="issuer" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Issue Date</label>
+                        <input type="text" class="form-control" id="date" name="date" required placeholder="e.g., May 2022">
+                    </div>
+                    <div class="mb-3">
+                        <label for="expiry" class="form-label">Expiry Date (optional)</label>
+                        <input type="text" class="form-control" id="expiry" name="expiry" placeholder="e.g., May 2024">
+                    </div>
+                    <div class="mb-3">
+                        <label for="url" class="form-label">Credential URL (optional)</label>
+                        <input type="url" class="form-control" id="url" name="url">
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Certification</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Achievement Modal -->
+<div class="modal fade" id="addAchievementModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Achievement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-achievement-form">
+                    <div class="mb-3">
+                        <label for="achievement" class="form-label">Achievement</label>
+                        <textarea class="form-control" id="achievement" name="achievement" rows="3" required></textarea>
+                        <div class="form-text">Example: Received Employee of the Month award three times in 2021.</div>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Achievement</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

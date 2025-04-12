@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block title %}Interview History - CareerCompass{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h1 class="mb-0">
+            <i class="fas fa-history me-2"></i> Interview History
+        </h1>
+    </div>
+    <div class="col-md-6 text-md-end">
+        <a href="{{ url_for('interview.index') }}" class="btn btn-primary">
+            <i class="fas fa-play me-2"></i> Practice New Interview
+        </a>
+    </div>
+</div>
+
+{% if interview %}
+<!-- Single interview detail view -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary bg-opacity-75 text-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">{{ interview.role }} Interview</h5>
+                <span class="badge 
+                    {% if interview.score >= 8 %}bg-success
+                    {% elif interview.score >= 6 %}bg-warning
+                    {% else %}bg-danger{% endif %} p-2">
+                    Score: {{ "%.1f"|format(interview.score) }}/10
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p><strong>Date:</strong> {{ interview.date.strftime('%Y-%m-%d %H:%M') }}</p>
+                        <p><strong>Mode:</strong> {{ interview.mode|capitalize }}</p>
+                        <p><strong>Questions:</strong> {{ interview.questions|length }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        {% if interview.feedback %}
+                        <div class="alert 
+                            {% if interview.score >= 8 %}alert-success
+                            {% elif interview.score >= 6 %}alert-warning
+                            {% else %}alert-danger{% endif %}">
+                            {{ interview.feedback.overall_feedback }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if interview.feedback %}
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6>Strengths</h6>
+                        {% if interview.feedback.strengths %}
+                        <ul>
+                            {% for strength in interview.feedback.strengths %}
+                            <li>{{ strength }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p class="text-muted">No specific strengths identified.</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Areas for Improvement</h6>
+                        {% if interview.feedback.areas_for_improvement %}
+                        <ul>
+                            {% for area in interview.feedback.areas_for_improvement %}
+                            <li>{{ area }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p class="text-muted">No specific areas for improvement identified.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <h5 class="border-bottom pb-2 mt-4">Questions & Answers</h5>
+                <div class="accordion" id="interviewAccordion">
+                    {% for question in interview.questions %}
+                    {% if question.answer %}
+                    <div class="accordion-item bg-transparent border-0 mb-3">
+                        <h2 class="accordion-header" id="heading{{ loop.index }}">
+                            <button class="accordion-button collapsed bg-dark bg-opacity-25" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}">
+                                <div class="d-flex justify-content-between align-items-center w-100 me-3">
+                                    <span>Q{{ loop.index }}: {{ question.question_text }}</span>
+                                    {% if question.score %}
+                                    <span class="badge 
+                                        {% if question.score >= 8 %}bg-success
+                                        {% elif question.score >= 6 %}bg-warning
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ "%.1f"|format(question.score) }}/10
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#interviewAccordion">
+                            <div class="accordion-body">
+                                <div class="card mb-3 bg-dark bg-opacity-10">
+                                    <div class="card-body">
+                                        <h6>Your Answer:</h6>
+                                        <p>{{ question.answer }}</p>
+                                    </div>
+                                </div>
+                                
+                                {% if question.feedback %}
+                                <div class="card bg-info bg-opacity-10">
+                                    <div class="card-body">
+                                        <h6>Feedback:</h6>
+                                        <p>{{ question.feedback.feedback }}</p>
+                                        
+                                        <div class="row mt-3">
+                                            <div class="col-md-4">
+                                                <h6>Clarity</h6>
+                                                <div class="feedback-meter">
+                                                    <div class="feedback-value bg-primary" style="width: {{ question.feedback.clarity * 10 }}%"></div>
+                                                </div>
+                                                <span class="text-muted">{{ question.feedback.clarity }}/10</span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h6>Relevance</h6>
+                                                <div class="feedback-meter">
+                                                    <div class="feedback-value bg-success" style="width: {{ question.feedback.relevance * 10 }}%"></div>
+                                                </div>
+                                                <span class="text-muted">{{ question.feedback.relevance }}/10</span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h6>Confidence</h6>
+                                                <div class="feedback-meter">
+                                                    <div class="feedback-value bg-info" style="width: {{ question.feedback.confidence * 10 }}%"></div>
+                                                </div>
+                                                <span class="text-muted">{{ question.feedback.confidence }}/10</span>
+                                            </div>
+                                        </div>
+                                        
+                                        {% if question.feedback.improvement_tips %}
+                                        <div class="mt-3">
+                                            <h6>Improvement Tips:</h6>
+                                            <ul>
+                                                {% for tip in question.feedback.improvement_tips %}
+                                                <li>{{ tip }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('interview.history') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i> Back to History
+                    </a>
+                    <a href="{{ url_for('interview.index') }}" class="btn btn-primary ms-2">
+                        <i class="fas fa-redo me-2"></i> Practice Again
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- Interview history list view -->
+<div class="card">
+    <div class="card-header bg-primary bg-opacity-75 text-white">
+        <h5 class="card-title mb-0">Your Interview Sessions</h5>
+    </div>
+    <div class="card-body">
+        {% if interviews and interviews|length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Role</th>
+                        <th>Mode</th>
+                        <th>Questions</th>
+                        <th>Score</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for interview in interviews|reverse %}
+                    <tr>
+                        <td>{{ interview.date.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ interview.role }}</td>
+                        <td>
+                            <span class="badge 
+                                {% if interview.mode == 'text' %}bg-info
+                                {% else %}bg-warning{% endif %}">
+                                {{ interview.mode|capitalize }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if interview.questions %}
+                            {{ interview.questions|length }}
+                            {% else %}
+                            0
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge 
+                                {% if interview.score >= 8 %}bg-success
+                                {% elif interview.score >= 6 %}bg-warning
+                                {% else %}bg-danger{% endif %} p-2">
+                                {{ "%.1f"|format(interview.score) }}/10
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('interview.view', index=loop.index0) }}" class="btn btn-outline-primary">
+                                    View
+                                </a>
+                                <button type="button" class="btn btn-outline-danger" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteConfirmModal"
+                                        data-item-id="{{ loop.index0 }}"
+                                        data-item-type="interview">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i> You haven't completed any interview practice sessions yet.
+        </div>
+        
+        <div class="text-center">
+            <a href="{{ url_for('interview.index') }}" class="btn btn-primary">
+                <i class="fas fa-play me-2"></i> Start Your First Interview Practice
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Interview statistics -->
+{% if interviews and interviews|length > 0 %}
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card dashboard-widget">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line me-2"></i> Performance Trends
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="interviewPerformanceChart" data-scores="{{ [interview.score for interview in interviews]|tojson }}" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card dashboard-widget">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-clipboard-list me-2"></i> Interview Statistics
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="display-6 fw-bold">{{ interviews|length }}</div>
+                        <div class="small text-muted">Total Interviews</div>
+                    </div>
+                    <div class="col-4">
+                        {% set total_score = 0 %}
+                        {% for i in interviews %}
+                            {% set total_score = total_score + i.score %}
+                        {% endfor %}
+                        <div class="display-6 fw-bold">{{ "%.1f"|format(total_score / interviews|length) }}</div>
+                        <div class="small text-muted">Average Score</div>
+                    </div>
+                    <div class="col-4">
+                        {% set total_questions = 0 %}
+                        {% for i in interviews %}
+                            {% if i.questions %}
+                                {% set total_questions = total_questions + i.questions|length %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="display-6 fw-bold">{{ total_questions }}</div>
+                        <div class="small text-muted">Total Questions</div>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <h6>Common Feedback Themes</h6>
+                <ul>
+                    <li>Be more specific with examples</li>
+                    <li>Quantify achievements when possible</li>
+                    <li>Structure answers with STAR method</li>
+                    <li>Practice speaking more confidently</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/interview.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chart-config.js') }}"></script>
+{% endblock %}

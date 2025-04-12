@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Preview - {{ resume.job_title }} - CareerCompass{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h1 class="mb-0">
+            <i class="fas fa-file-alt me-2"></i> Resume Preview
+        </h1>
+        <p class="text-muted">
+            <strong>Position:</strong> {{ resume.job_title }}
+        </p>
+    </div>
+    <div class="col-md-6 text-md-end">
+        <div class="btn-group">
+            <a href="{{ url_for('resume.download', index=index) }}" class="btn btn-success">
+                <i class="fas fa-download me-2"></i> Download PDF
+            </a>
+            <a href="{{ url_for('resume.index') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i> Back to Resumes
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Resume preview pane -->
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary bg-opacity-75 text-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Resume Preview</h5>
+                <div class="d-flex align-items-center">
+                    <span class="me-2">Template: {{ resume.template|capitalize }}</span>
+                    <div class="match-score 
+                        {% if resume.score >= 75 %}bg-success
+                        {% elif resume.score >= 50 %}bg-warning
+                        {% else %}bg-danger{% endif %} text-white">
+                        {{ resume.score|int }}%
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="resume-preview">
+                    <!-- Personal Information -->
+                    <div class="text-center mb-4">
+                        <h1>{{ resume.sections.personal_info.full_name }}</h1>
+                        <p>
+                            {% if resume.sections.personal_info.email %}
+                            <span class="me-3"><i class="fas fa-envelope me-1"></i> {{ resume.sections.personal_info.email }}</span>
+                            {% endif %}
+                            
+                            {% if resume.sections.personal_info.phone %}
+                            <span class="me-3"><i class="fas fa-phone me-1"></i> {{ resume.sections.personal_info.phone }}</span>
+                            {% endif %}
+                            
+                            {% if resume.sections.personal_info.location %}
+                            <span class="me-3"><i class="fas fa-map-marker-alt me-1"></i> {{ resume.sections.personal_info.location }}</span>
+                            {% endif %}
+                        </p>
+                        <p>
+                            {% if resume.sections.personal_info.linkedin %}
+                            <a href="{{ resume.sections.personal_info.linkedin if 'http' in resume.sections.personal_info.linkedin else 'https://' + resume.sections.personal_info.linkedin }}" target="_blank" class="me-3">
+                                <i class="fab fa-linkedin me-1"></i> LinkedIn
+                            </a>
+                            {% endif %}
+                            
+                            {% if resume.sections.personal_info.github %}
+                            <a href="{{ resume.sections.personal_info.github if 'http' in resume.sections.personal_info.github else 'https://' + resume.sections.personal_info.github }}" target="_blank" class="me-3">
+                                <i class="fab fa-github me-1"></i> GitHub
+                            </a>
+                            {% endif %}
+                            
+                            {% if resume.sections.personal_info.website %}
+                            <a href="{{ resume.sections.personal_info.website if 'http' in resume.sections.personal_info.website else 'https://' + resume.sections.personal_info.website }}" target="_blank">
+                                <i class="fas fa-globe me-1"></i> Website
+                            </a>
+                            {% endif %}
+                        </p>
+                    </div>
+                    
+                    <!-- Professional Summary -->
+                    {% if resume.sections.personal_info.summary %}
+                    <div class="mb-4">
+                        <h4 class="border-bottom pb-2">Professional Summary</h4>
+                        <p>{{ resume.sections.personal_info.summary }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Skills -->
+                    {% if resume.sections.skills %}
+                    <div class="mb-4">
+                        <h4 class="border-bottom pb-2">Skills</h4>
+                        <div>
+                            {% for skill in resume.sections.skills %}
+                            <span class="badge bg-secondary me-2 mb-2">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Experience -->
+                    {% if resume.sections.experience %}
+                    <div class="mb-4">
+                        <h4 class="border-bottom pb-2">Work Experience</h4>
+                        {% for exp in resume.sections.experience %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <h5>{{ exp.title }}</h5>
+                                <span>{{ exp.start_date }} - {{ exp.end_date }}</span>
+                            </div>
+                            <h6>{{ exp.company }}{% if exp.location %}, {{ exp.location }}{% endif %}</h6>
+                            <p>{{ exp.description }}</p>
+                            
+                            {% if exp.responsibilities %}
+                            <ul class="mb-2">
+                                {% for item in exp.responsibilities %}
+                                <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            
+                            {% if exp.achievements %}
+                            <ul class="mb-0">
+                                {% for item in exp.achievements %}
+                                <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Education -->
+                    {% if resume.sections.education %}
+                    <div class="mb-4">
+                        <h4 class="border-bottom pb-2">Education</h4>
+                        {% for edu in resume.sections.education %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <h5>{{ edu.degree }}</h5>
+                                <span>{{ edu.start_date }} - {{ edu.end_date }}</span>
+                            </div>
+                            <h6>{{ edu.institution }}{% if edu.location %}, {{ edu.location }}{% endif %}</h6>
+                            {% if edu.gpa %}<p>GPA: {{ edu.gpa }}</p>{% endif %}
+                            {% if edu.description %}<p>{{ edu.description }}</p>{% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Projects -->
+                    {% if resume.sections.projects %}
+                    <div class="mb-4">
+                        <h4 class="border-bottom pb-2">Projects</h4>
+                        {% for proj in resume.sections.projects %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <h5>{{ proj.name }}</h5>
+                                {% if proj.start_date or proj.end_date %}
+                                <span>{{ proj.start_date or '' }} {{ '- ' + proj.end_date if proj.end_date else '' }}</span>
+                                {% endif %}
+                            </div>
+                            <p>{{ proj.description }}</p>
+                            {% if proj.technologies %}
+                            <p><strong>Technologies:</strong> {{ proj.technologies|join(', ') }}</p>
+                            {% endif %}
+                            {% if proj.url %}
+                            <p><a href="{{ proj.url }}" target="_blank">Project Link</a></p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Certifications -->
+                    {% if resume.sections.certifications %}
+                    <div class="mb-4">
+                        <h4 class="border-bottom pb-2">Certifications</h4>
+                        {% for cert in resume.sections.certifications %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <h5>{{ cert.name }}</h5>
+                                <span>{{ cert.date }}</span>
+                            </div>
+                            <h6>{{ cert.issuer }}</h6>
+                            {% if cert.expiry %}<p>Expires: {{ cert.expiry }}</p>{% endif %}
+                            {% if cert.url %}<p><a href="{{ cert.url }}" target="_blank">Credential Link</a></p>{% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Achievements -->
+                    {% if resume.sections.achievements %}
+                    <div class="mb-4">
+                        <h4 class="border-bottom pb-2">Achievements</h4>
+                        <ul>
+                            {% for achievement in resume.sections.achievements %}
+                            <li>{{ achievement }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resume information and suggestions pane -->
+    <div class="col-lg-4">
+        <!-- Resume Info Card -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary bg-opacity-50">
+                <h5 class="card-title mb-0">Resume Information</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Created On:</strong> {{ resume.sections.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                <p><strong>Template:</strong> {{ resume.template|capitalize }}</p>
+                <p><strong>Match Score:</strong> {{ resume.score|int }}%</p>
+                
+                {% if resume.keywords %}
+                <div class="mt-3">
+                    <h6>Keywords Used</h6>
+                    <div>
+                        {% for kw in resume.keywords %}
+                        <span class="badge bg-primary me-2 mb-2">{{ kw }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Suggestions Card -->
+        <div class="card mb-4">
+            <div class="card-header bg-info bg-opacity-50">
+                <h5 class="card-title mb-0">Improvement Suggestions</h5>
+            </div>
+            <div class="card-body">
+                {% if suggestions %}
+                    {% if suggestions.missing_keywords %}
+                    <div class="mb-3">
+                        <h6>Keywords Missing from Your Profile</h6>
+                        <div>
+                            {% for kw in suggestions.missing_keywords %}
+                            <span class="badge bg-warning text-dark me-2 mb-2">{{ kw }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if suggestions.recommendations %}
+                    <div class="mb-3">
+                        <h6>Recommendations</h6>
+                        <ul>
+                            {% for rec in suggestions.recommendations %}
+                            <li>{{ rec }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    {% if not suggestions.missing_keywords and not suggestions.recommendations %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i> Your resume is well-optimized for this job!
+                    </div>
+                    {% endif %}
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> No specific suggestions available for this resume.
+                </div>
+                {% endif %}
+                
+                <div class="mt-3">
+                    <h6>General Tips</h6>
+                    <ul>
+                        <li>Quantify your achievements with numbers when possible</li>
+                        <li>Use action verbs to start bullet points</li>
+                        <li>Proofread for grammar and spelling errors</li>
+                        <li>Keep your resume to 1-2 pages</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,511 @@
+{% extends "base.html" %}
+
+{% block title %}Interview Practice - CareerCompass{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="mb-3">AI-Powered Interview Practice</h1>
+                    <p class="lead">Practice job interviews with our AI interviewer and get real-time feedback on your answers.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <h4 class="mb-0">Setup Interview</h4>
+                </div>
+                <div class="card-body">
+                    <form id="interviewSetupForm">
+                        <div class="mb-3">
+                            <label for="jobRole" class="form-label">Job Role</label>
+                            <input type="text" class="form-control" id="jobRole" placeholder="e.g., Software Engineer">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Interview Type</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="technical" id="technicalCheck" checked>
+                                <label class="form-check-label" for="technicalCheck">
+                                    Technical
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="behavioral" id="behavioralCheck" checked>
+                                <label class="form-check-label" for="behavioralCheck">
+                                    Behavioral
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="hr" id="hrCheck" checked>
+                                <label class="form-check-label" for="hrCheck">
+                                    HR/General
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="questionCount" class="form-label">Number of Questions</label>
+                            <select class="form-select" id="questionCount">
+                                <option value="5">5 Questions</option>
+                                <option value="10" selected>10 Questions</option>
+                                <option value="15">15 Questions</option>
+                                <option value="20">20 Questions</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Response Mode</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="responseMode" id="textMode" value="text" checked>
+                                <label class="form-check-label" for="textMode">
+                                    Text Response
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="responseMode" id="audioMode" value="audio" disabled>
+                                <label class="form-check-label" for="audioMode">
+                                    Audio Response (Coming Soon)
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary">Start Interview</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-transparent border-0">
+                    <h4 class="mb-0">Recent Interviews</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted text-center">You haven't completed any interviews yet</p>
+                    <div class="d-grid mt-3">
+                        <a href="/interview/history" class="btn btn-outline-primary">View History</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div id="interviewContainer" class="card border-0 shadow-sm" style="display: none;">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Interview Session</h4>
+                    <span class="badge bg-primary" id="questionCounter">Question 1/10</span>
+                </div>
+                <div class="card-body">
+                    <div id="questionSection">
+                        <h5 class="mb-3" id="questionText">Loading question...</h5>
+                        <div class="progress mb-4" style="height: 5px;">
+                            <div class="progress-bar" role="progressbar" id="progressBar" style="width: 10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="answerBox" class="form-label">Your Answer</label>
+                            <textarea class="form-control" id="answerBox" rows="6" placeholder="Type your answer here..."></textarea>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-outline-secondary" id="skipBtn">Skip Question</button>
+                            <button class="btn btn-primary" id="submitAnswerBtn">Submit Answer</button>
+                        </div>
+                    </div>
+                    
+                    <div id="feedbackSection" style="display: none;">
+                        <h5 class="mb-4">Feedback</h5>
+                        
+                        <div class="card bg-light mb-4">
+                            <div class="card-body">
+                                <h6 class="card-title">Your Answer</h6>
+                                <p class="card-text" id="userAnswer"></p>
+                            </div>
+                        </div>
+                        
+                        <div class="card border-0 mb-4">
+                            <div class="card-body">
+                                <h6 class="card-title">Analysis</h6>
+                                <p class="card-text" id="answerAnalysis"></p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="card border-0 h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Strengths</h6>
+                                        <ul class="list-group list-group-flush" id="strengthsList">
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-0 h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Areas for Improvement</h6>
+                                        <ul class="list-group list-group-flush" id="improvementsList">
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">Score</h6>
+                                <span class="display-6" id="scoreDisplay">7/10</span>
+                            </div>
+                            <button class="btn btn-primary" id="nextQuestionBtn">Next Question</button>
+                        </div>
+                    </div>
+                    
+                    <div id="completionSection" style="display: none;">
+                        <div class="text-center py-4">
+                            <h4 class="mb-3">Interview Complete!</h4>
+                            <p class="lead mb-4">You've completed the interview session. Here's a summary of your performance.</p>
+                            
+                            <div class="row justify-content-center mb-4">
+                                <div class="col-md-8">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Overall Score</h5>
+                                            <div class="display-1 fw-bold text-primary mb-3" id="finalScore">75%</div>
+                                            <p class="card-text" id="scoreDescription">Good job! You demonstrated solid knowledge and communication skills.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-block">
+                                <button class="btn btn-outline-primary me-md-2" id="viewDetailedResultsBtn">View Detailed Results</button>
+                                <button class="btn btn-primary" id="startNewInterviewBtn">Start New Interview</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="welcomeMessage" class="text-center py-5">
+                <h2 class="mb-4">Ready to practice your interview skills?</h2>
+                <p class="lead mb-4">Configure your interview settings and click "Start Interview" to begin practicing.</p>
+                <p>Our AI-powered system will provide personalized questions based on your target role and give you detailed feedback on your answers.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const interviewSetupForm = document.getElementById('interviewSetupForm');
+        const interviewContainer = document.getElementById('interviewContainer');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const questionSection = document.getElementById('questionSection');
+        const feedbackSection = document.getElementById('feedbackSection');
+        const completionSection = document.getElementById('completionSection');
+        
+        // Sample questions for demo
+        const questions = [
+            {
+                "text": "Tell me about yourself and your background in this field.",
+                "type": "hr"
+            },
+            {
+                "text": "What are your greatest strengths and weaknesses?",
+                "type": "hr"
+            },
+            {
+                "text": "Describe a challenging project you worked on and how you overcame obstacles.",
+                "type": "behavioral"
+            },
+            {
+                "text": "How do you handle stress and pressure in your work?",
+                "type": "behavioral"
+            },
+            {
+                "text": "Explain the concept of object-oriented programming and its core principles.",
+                "type": "technical"
+            },
+            {
+                "text": "What's the difference between a linked list and an array? When would you use one over the other?",
+                "type": "technical"
+            },
+            {
+                "text": "How do you stay updated with the latest technologies in your field?",
+                "type": "hr"
+            },
+            {
+                "text": "Describe a time when you had to work with a difficult team member. How did you handle it?",
+                "type": "behavioral"
+            },
+            {
+                "text": "What is the time complexity of binary search? Explain your answer.",
+                "type": "technical"
+            },
+            {
+                "text": "Where do you see yourself in five years?",
+                "type": "hr"
+            }
+        ];
+        
+        let currentQuestionIndex = 0;
+        let selectedQuestions = [];
+        let interviewScores = [];
+        
+        // Start interview
+        interviewSetupForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const jobRole = document.getElementById('jobRole').value;
+            const questionCount = parseInt(document.getElementById('questionCount').value);
+            
+            // Validate job role
+            if (!jobRole) {
+                alert('Please enter a job role');
+                return;
+            }
+            
+            // Filter questions based on selected types
+            const selectedTypes = [];
+            if (document.getElementById('technicalCheck').checked) selectedTypes.push('technical');
+            if (document.getElementById('behavioralCheck').checked) selectedTypes.push('behavioral');
+            if (document.getElementById('hrCheck').checked) selectedTypes.push('hr');
+            
+            if (selectedTypes.length === 0) {
+                alert('Please select at least one interview type');
+                return;
+            }
+            
+            // Filter and shuffle questions
+            const filteredQuestions = questions.filter(q => selectedTypes.includes(q.type));
+            selectedQuestions = shuffleArray(filteredQuestions).slice(0, questionCount);
+            
+            // If not enough questions, show a message
+            if (selectedQuestions.length < questionCount) {
+                alert(`Only ${selectedQuestions.length} questions available for the selected types. Proceeding with available questions.`);
+            }
+            
+            // Reset variables
+            currentQuestionIndex = 0;
+            interviewScores = [];
+            
+            // Show interview container and first question
+            welcomeMessage.style.display = 'none';
+            interviewContainer.style.display = 'block';
+            questionSection.style.display = 'block';
+            feedbackSection.style.display = 'none';
+            completionSection.style.display = 'none';
+            
+            // Update progress and display first question
+            updateProgress();
+            displayQuestion();
+        });
+        
+        // Submit answer
+        document.getElementById('submitAnswerBtn').addEventListener('click', function() {
+            const answerText = document.getElementById('answerBox').value.trim();
+            if (!answerText) {
+                alert('Please provide an answer or skip the question');
+                return;
+            }
+            
+            // Show feedback
+            questionSection.style.display = 'none';
+            feedbackSection.style.display = 'block';
+            
+            // Display user's answer
+            document.getElementById('userAnswer').textContent = answerText;
+            
+            // Simple "AI" analysis (for demonstration)
+            const score = Math.floor(Math.random() * 4) + 7; // Score between 7-10
+            interviewScores.push(score);
+            
+            // Display score
+            document.getElementById('scoreDisplay').textContent = score + '/10';
+            
+            // Generate feedback
+            let analysis = '';
+            let strengths = [];
+            let improvements = [];
+            
+            // Random feedback based on the question type
+            const questionType = selectedQuestions[currentQuestionIndex].type;
+            
+            if (questionType === 'technical') {
+                analysis = 'Your answer demonstrates good technical knowledge, but could be more detailed in explaining the implementation.';
+                strengths = [
+                    'Good understanding of technical concepts',
+                    'Clear explanation of the core principles',
+                    'Practical approach to the solution'
+                ];
+                improvements = [
+                    'Could provide more specific examples',
+                    'Consider discussing trade-offs in your approach',
+                    'Expand on the technical details a bit more'
+                ];
+            } else if (questionType === 'behavioral') {
+                analysis = 'You provided a good real-world example that demonstrated your skills, but could structure your response more clearly using the STAR method.';
+                strengths = [
+                    'Used a relevant personal experience',
+                    'Highlighted key achievements',
+                    'Showed problem-solving abilities'
+                ];
+                improvements = [
+                    'Structure response with Situation, Task, Action, Result (STAR)',
+                    'Quantify your impact more specifically',
+                    'Be more concise in your storytelling'
+                ];
+            } else {
+                analysis = 'Your answer was professional and showed enthusiasm, but could benefit from more specific details about your career goals.';
+                strengths = [
+                    'Professional tone and attitude',
+                    'Genuine enthusiasm for the role',
+                    'Good alignment with job requirements'
+                ];
+                improvements = [
+                    'Be more specific about career aspirations',
+                    'Connect your background more directly to this position',
+                    'Prepare a more concise elevator pitch'
+                ];
+            }
+            
+            // Display feedback
+            document.getElementById('answerAnalysis').textContent = analysis;
+            
+            // Display strengths
+            const strengthsList = document.getElementById('strengthsList');
+            strengthsList.innerHTML = '';
+            strengths.forEach(s => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item border-0 ps-0';
+                li.innerHTML = `<i class="bi bi-check-circle-fill text-success me-2"></i>${s}`;
+                strengthsList.appendChild(li);
+            });
+            
+            // Display improvements
+            const improvementsList = document.getElementById('improvementsList');
+            improvementsList.innerHTML = '';
+            improvements.forEach(i => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item border-0 ps-0';
+                li.innerHTML = `<i class="bi bi-arrow-up-circle-fill text-primary me-2"></i>${i}`;
+                improvementsList.appendChild(li);
+            });
+        });
+        
+        // Skip question
+        document.getElementById('skipBtn').addEventListener('click', function() {
+            interviewScores.push(0); // Score 0 for skipped questions
+            nextQuestion();
+        });
+        
+        // Next question button
+        document.getElementById('nextQuestionBtn').addEventListener('click', function() {
+            nextQuestion();
+        });
+        
+        // Start new interview button
+        document.getElementById('startNewInterviewBtn').addEventListener('click', function() {
+            // Reset the interview form and show welcome message
+            interviewSetupForm.reset();
+            interviewContainer.style.display = 'none';
+            welcomeMessage.style.display = 'block';
+        });
+        
+        // View detailed results button
+        document.getElementById('viewDetailedResultsBtn').addEventListener('click', function() {
+            alert('In the complete app, this would show detailed analysis and feedback for each question, along with suggestions for improvement.');
+        });
+        
+        // Display current question
+        function displayQuestion() {
+            document.getElementById('questionText').textContent = selectedQuestions[currentQuestionIndex].text;
+            document.getElementById('answerBox').value = '';
+        }
+        
+        // Update progress indicators
+        function updateProgress() {
+            const totalQuestions = selectedQuestions.length;
+            const current = currentQuestionIndex + 1;
+            
+            document.getElementById('questionCounter').textContent = `Question ${current}/${totalQuestions}`;
+            
+            const progressPercentage = (current / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progressPercentage + '%';
+            document.getElementById('progressBar').setAttribute('aria-valuenow', progressPercentage);
+        }
+        
+        // Move to next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex >= selectedQuestions.length) {
+                // Interview complete
+                showCompletionScreen();
+            } else {
+                // Show next question
+                questionSection.style.display = 'block';
+                feedbackSection.style.display = 'none';
+                updateProgress();
+                displayQuestion();
+            }
+        }
+        
+        // Show completion screen
+        function showCompletionScreen() {
+            questionSection.style.display = 'none';
+            feedbackSection.style.display = 'none';
+            completionSection.style.display = 'block';
+            
+            // Calculate overall score
+            const totalPossible = selectedQuestions.length * 10;
+            const totalScore = interviewScores.reduce((sum, score) => sum + score, 0);
+            const percentageScore = Math.round((totalScore / totalPossible) * 100);
+            
+            document.getElementById('finalScore').textContent = percentageScore + '%';
+            
+            // Set description based on score
+            let description = '';
+            if (percentageScore >= 90) {
+                description = 'Excellent! You're well-prepared and demonstrated outstanding interview skills.';
+            } else if (percentageScore >= 75) {
+                description = 'Good job! You demonstrated solid knowledge and communication skills.';
+            } else if (percentageScore >= 60) {
+                description = 'Not bad! You have a good foundation but could improve in some areas.';
+            } else {
+                description = 'You have room for improvement. Keep practicing and focus on the feedback provided.';
+            }
+            
+            document.getElementById('scoreDescription').textContent = description;
+        }
+        
+        // Helper function to shuffle array
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+    });
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .list-group-item i {
+        font-size: 0.9rem;
+    }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+{% endblock %}
